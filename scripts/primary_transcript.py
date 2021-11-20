@@ -6,7 +6,7 @@ from Bio.SeqRecord import SeqRecord
 def primary_transcript(species):
     cds_primary_dict = {}
 
-    for record in SeqIO.parse(f"Genome_data/CDS/{species}.fna", "fasta"):
+    for record in SeqIO.parse(f"Results/Genome_data/CDS/{species}.fna", "fasta"):
         if "protein_id" not in record.description:
             continue
         gene_name = record.description.split("gene=")[-1].split("]")[0]
@@ -19,7 +19,7 @@ def primary_transcript(species):
         except:
             cds_primary_dict[gene_name] = value
 
-    protein_dict = SeqIO.to_dict(SeqIO.parse(f"Genome_data/Protein/{species}.faa", "fasta"))
+    protein_dict = SeqIO.to_dict(SeqIO.parse(f"Results/Genome_data/Protein/{species}.faa", "fasta"))
 
     cds_records = []
     protein_records = []
@@ -30,5 +30,5 @@ def primary_transcript(species):
         protein_record.description = ""
         protein_records.append(protein_record)
 
-    SeqIO.write(cds_records, f"Genome_data/CDS/primary_transcripts/{species}.fa", "fasta")
-    SeqIO.write(protein_records, f"Genome_data/Protein/primary_transcripts/{species}.fa", "fasta")
+    SeqIO.write(cds_records, f"Results/Genome_data/CDS/primary_transcripts/{species}.fa", "fasta")
+    SeqIO.write(protein_records, f"Results/Genome_data/Protein/primary_transcripts/{species}.fa", "fasta")

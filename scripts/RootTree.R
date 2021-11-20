@@ -5,16 +5,16 @@
 
 
 library(ape)
-tree <- read.tree('./SpeciesTree/no_branch_length.nwk')
+tree <- read.tree('Results/SpeciesTree/no_branch_length.nwk')
 
 if(is.rooted(tree) == TRUE){
   unrooted_tree <- unroot(tree)
-  write.tree(unrooted_tree, './SpeciesTree/unrooted.nwk')
-  write.tree(tree, './SpeciesTree/rooted.nwk')
+  write.tree(unrooted_tree, 'Results/SpeciesTree/unrooted.nwk')
+  write.tree(tree, 'Results/SpeciesTree/rooted.nwk')
 }else if(is.rooted(tree) == FALSE){
   rooted_tree <- root(tree, outgroup = 'Sarcophilus_harrisii', resolve.root = TRUE)
-  write.tree(rooted_tree, './SpeciesTree/rooted.nwk')
-  write.tree(tree, './SpeciesTree/unrooted.nwk')
+  write.tree(rooted_tree, 'Results/SpeciesTree/rooted.nwk')
+  write.tree(tree, 'Results/SpeciesTree/unrooted.nwk')
 }
 
 

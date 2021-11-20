@@ -9,10 +9,10 @@ import multiprocessing
 def TAAS(gene_name, target_list, control_list, alignment_directory, format):
     if format == 'Gblocks':
         file_format = 'fas'
-        result_directory = './TAAS/Gblocks/'
+        result_directory = 'Results/TAAS/Gblocks/'
     elif format == 'NotTrimmed':
         file_format = 'best.fas'
-        result_directory = './TAAS/NotTrimmed/'
+        result_directory = 'Results/TAAS/NotTrimmed/'
 
     file_path = '{0}/{1}.{2}'.format(alignment_directory, gene_name, file_format)  # Edit(Target files extension)
     Species_dic = parsefas.MakeSeqDict(file_path, no_enter=True)
@@ -53,9 +53,9 @@ def TAAS(gene_name, target_list, control_list, alignment_directory, format):
 
 def analyse(target_list, format):
     if format == 'Gblocks':
-        result_directory = './TAAS/Gblocks/'
+        result_directory = 'Results/TAAS/Gblocks/'
     elif format == 'NotTrimmed':
-        result_directory = './TAAS/NotTrimmed/'
+        result_directory = 'Results/TAAS/NotTrimmed/'
 
     t1_gene = []
     t1_site = 0
@@ -141,22 +141,22 @@ def analyse(target_list, format):
 
 
 def RunTAAS(align_tool, TargetList, ControlList, threads):
-    os.makedirs('./TAAS/Gblocks/TAAS_sites', exist_ok=True)
-    os.makedirs('./TAAS/NotTrimmed/TAAS_sites', exist_ok=True)
-    g = open('./TAAS/Gblocks/TAAS_genes.txt', 'w')
+    os.makedirs('Results/TAAS/Gblocks/TAAS_sites', exist_ok=True)
+    os.makedirs('Results/TAAS/NotTrimmed/TAAS_sites', exist_ok=True)
+    g = open('Results/TAAS/Gblocks/TAAS_genes.txt', 'w')
     g.close()
-    h = open('./TAAS/NotTrimmed/TAAS_genes.txt', 'w')
+    h = open('Results/TAAS/NotTrimmed/TAAS_genes.txt', 'w')
     h.close()
 
-    Gene = filelist.mklist('.fas', directory='./Alignment/Protein/Trimmed/{}_gblocks'.format(align_tool))
+    Gene = filelist.mklist('.fas', directory='Results/Alignment/Protein/Trimmed/{}_gblocks'.format(align_tool))
 
     global TAAS_wrap_gblocks, TAAS_wrap_nottrimmed
 
     def TAAS_wrap_gblocks(gene_name):
-        TAAS(gene_name, TargetList, ControlList, './Alignment/Protein/Trimmed/{}_gblocks'.format(align_tool), 'Gblocks')
+        TAAS(gene_name, TargetList, ControlList, 'Results/Alignment/Protein/Trimmed/{}_gblocks'.format(align_tool), 'Gblocks')
 
     def TAAS_wrap_nottrimmed(gene_name):
-        TAAS(gene_name, TargetList, ControlList, './Alignment/Protein/NotTrimmed/{}'.format(align_tool), 'NotTrimmed')
+        TAAS(gene_name, TargetList, ControlList, 'Results/Alignment/Protein/NotTrimmed/{}'.format(align_tool), 'NotTrimmed')
 
     pool = multiprocessing.Pool(processes=threads)
     pool.map(TAAS_wrap_gblocks, Gene)

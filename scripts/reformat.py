@@ -14,7 +14,7 @@ def get_cds_dict(species_list):
     cds_dict = {}
     for species in species_list:
         per_species_dict = {}
-        for record in SeqIO.parse(f"Genome_data/CDS/primary_transcripts/{species}.fa", 
+        for record in SeqIO.parse(f"Results/Genome_data/CDS/primary_transcripts/{species}.fa", 
                                  "fasta"):
             per_species_dict[record.id] = record.seq
         cds_dict[species] = per_species_dict
@@ -24,7 +24,7 @@ def get_cds_dict(species_list):
 
 def get_gene_symbol_dict():
     gene_symbol_dict = {}
-    for record in SeqIO.parse("Genome_data/CDS/Homo_sapiens.fna", "fasta"):
+    for record in SeqIO.parse("Results/Genome_data/CDS/Homo_sapiens.fna", "fasta"):
         if "protein_id" not in record.description:
             continue
         gene_symbol = record.description.split("gene=")[-1].split("]")[0]
@@ -50,8 +50,8 @@ def reformat_one_gene(input_file, cds_dict, gene_symbol_dict):
         
         protein_records.append(SeqRecord(record.seq, id=the_species, description=""))
         cds_records.append(SeqRecord(cds, id=the_species, description=""))
-    SeqIO.write(protein_records, f"All_sequences/Protein_sequence/{gene_symbol}.fasta", "fasta")
-    SeqIO.write(cds_records, f"All_sequences/CDS_sequence/{gene_symbol}.fasta", "fasta")
+    SeqIO.write(protein_records, f"Results/All_sequences/Protein_sequence/{gene_symbol}.fasta", "fasta")
+    SeqIO.write(cds_records, f"Results/All_sequences/CDS_sequence/{gene_symbol}.fasta", "fasta")
     
 
 def main(species_list, file_list):

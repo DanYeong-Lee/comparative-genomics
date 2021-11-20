@@ -6,22 +6,22 @@ import argparse
 
 def pal2nal_normal(gene_name, align_tool):
     os.system(
-        'pal2nal.pl ./Alignment/Protein/NotTrimmed/{1}/{0}.best.fas ./All_sequences/CDS_sequence/{0}.fasta -output fasta > ./Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas'.format(
+        'pal2nal.pl Results/Alignment/Protein/NotTrimmed/{1}/{0}.best.fas Results/All_sequences/CDS_sequence/{0}.fasta -output fasta > Results/Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas'.format(
             gene_name, align_tool))
 
 
 def pal2nal_error(gene_name, align_tool):
     os.system(
-        'pal2nal.pl ./Alignment/Protein/NotTrimmed/{1}/{0}.best.fas ./Alignment/Codon/NotTrimmed/{1}_pal2nal_errorfix/{0}.fasta -output fasta > ./Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas'.format(
+        'pal2nal.pl Results/Alignment/Protein/NotTrimmed/{1}/{0}.best.fas Results/Alignment/Codon/NotTrimmed/{1}_pal2nal_errorfix/{0}.fasta -output fasta > Results/Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas'.format(
             gene_name, align_tool))
 
 
 def errorlist(align_tool):
     pal2nal_list = filelist.mklist(extension='.fas',
-                                   directory='./Alignment/Codon/NotTrimmed/{}_pal2nal'.format(align_tool))
+                                   directory='Results/Alignment/Codon/NotTrimmed/{}_pal2nal'.format(align_tool))
     error_list = []
     for file in pal2nal_list:
-        if os.path.getsize('./Alignment/Codon/NotTrimmed/{0}_pal2nal/{1}.fas'.format(align_tool, file)) == 0:
+        if os.path.getsize('Results/Alignment/Codon/NotTrimmed/{0}_pal2nal/{1}.fas'.format(align_tool, file)) == 0:
             error_list.append(file)
     return error_list
 
@@ -31,7 +31,7 @@ def errordict(errorlist):
     for gene in errorlist:
         nuc_dict = {}
 
-        f = open('./All_sequences/CDS_sequence/{0}.fasta'.format(gene))
+        f = open('Results/All_sequences/CDS_sequence/{0}.fasta'.format(gene))
         F = f.read()
         f.close()
 
@@ -57,7 +57,7 @@ def fixinputnuc(errordict, align_tool):
             elif nuc_len % 3 == 1:
                 errordict[gene][species] = errordict[gene][species] + 'NN\n'
 
-        f = open('./Alignment/Codon/NotTrimmed/{0}_pal2nal_errorfix/{1}.fasta'.format(align_tool, gene), 'w')
+        f = open('Results/Alignment/Codon/NotTrimmed/{0}_pal2nal_errorfix/{1}.fasta'.format(align_tool, gene), 'w')
         for species in errordict[gene]:
             unit = '>' + species + '\n' + errordict[gene][species]
             f.write(unit)
@@ -67,11 +67,11 @@ def fixinputnuc(errordict, align_tool):
 
 
 def convert(gene, align_tool):
-    f = open('./Alignment/Codon/Trimmed/{0}_pal2nal_gblocks/{1}.fas'.format(align_tool, gene))
+    f = open('Results/Alignment/Codon/Trimmed/{0}_pal2nal_gblocks/{1}.fas'.format(align_tool, gene))
     F = f.read()
     f.close()
 
-    g = open('./Alignment/Codon/Trimmed/{0}_pal2nal_gblocks_paml/{1}.fas'.format(align_tool, gene), 'w')
+    g = open('Results/Alignment/Codon/Trimmed/{0}_pal2nal_gblocks_paml/{1}.fas'.format(align_tool, gene), 'w')
     seq_list = F.split('>')
     seq_list.remove('')
 
@@ -91,12 +91,12 @@ def convert(gene, align_tool):
 
 
 def codonalign(align_tool, threads):
-    os.makedirs('./Alignment/Codon/NotTrimmed/{}_pal2nal'.format(align_tool), exist_ok=True)
-    os.makedirs('./Alignment/Codon/NotTrimmed/{}_pal2nal_errorfix'.format(align_tool), exist_ok=True)
-    os.makedirs('./Alignment/Codon/Trimmed/{}_pal2nal_gblocks'.format(align_tool), exist_ok=True)
-    os.makedirs('./Alignment/Codon/Trimmed/{}_pal2nal_gblocks_paml'.format(align_tool), exist_ok=True)
+    os.makedirs('Results/Alignment/Codon/NotTrimmed/{}_pal2nal'.format(align_tool), exist_ok=True)
+    os.makedirs('Results/Alignment/Codon/NotTrimmed/{}_pal2nal_errorfix'.format(align_tool), exist_ok=True)
+    os.makedirs('Results/Alignment/Codon/Trimmed/{}_pal2nal_gblocks'.format(align_tool), exist_ok=True)
+    os.makedirs('Results/Alignment/Codon/Trimmed/{}_pal2nal_gblocks_paml'.format(align_tool), exist_ok=True)
 
-    gene_list = filelist.mklist(extension='.best.fas', directory='./Alignment/Protein/NotTrimmed/{}'.format(align_tool))
+    gene_list = filelist.mklist(extension='.best.fas', directory='Results/Alignment/Protein/NotTrimmed/{}'.format(align_tool))
 
     global wrap1, wrap2
 
@@ -113,37 +113,27 @@ def codonalign(align_tool, threads):
     fixinputnuc(error_dict, align_tool)
 
     for gene in gene_list:
-        os.system('Gblocks ./Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas -t=c -p=n'.format(gene, align_tool))
+        os.system('Gblocks Results/Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas -t=c -p=n'.format(gene, align_tool))
         os.system(
-            'cp ./Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas-gb ./Alignment/Codon/Trimmed/{1}_pal2nal_gblocks/{0}.fas'.format(
+            'cp Results/Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas-gb Results/Alignment/Codon/Trimmed/{1}_pal2nal_gblocks/{0}.fas'.format(
                 gene, align_tool))
-        os.system('rm ./Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas-gb'.format(gene, align_tool))
+        os.system('rm Results/Alignment/Codon/NotTrimmed/{1}_pal2nal/{0}.fas-gb'.format(gene, align_tool))
 
-    gblocked_list = filelist.mklist(extension='.fas', directory='./Alignment/Codon/Trimmed/{}_pal2nal_gblocks'.format(align_tool))
+    gblocked_list = filelist.mklist(extension='.fas', directory='Results/Alignment/Codon/Trimmed/{}_pal2nal_gblocks'.format(align_tool))
 
     blank_gene_list = []
     for gene in gblocked_list:
-        with open('./Alignment/Codon/Trimmed/{1}_pal2nal_gblocks/{0}.fas'.format(gene, align_tool), 'r') as f:
+        with open('Results/Alignment/Codon/Trimmed/{1}_pal2nal_gblocks/{0}.fas'.format(gene, align_tool), 'r') as f:
             f.readline()
             if f.readline() == '\n':
                 blank_gene_list.append(gene)
 
-    with open('./Alignment/Codon/Trimmed/Blank_genes.txt', 'w') as g:
+    with open('Results/Alignment/Codon/Trimmed/Blank_genes.txt', 'w') as g:
         for gene in blank_gene_list:
-            os.system('rm ./Alignment/Codon/Trimmed/{1}_pal2nal_gblocks/{0}.fas'.format(gene, align_tool))
+            os.system('rm Results/Alignment/Codon/Trimmed/{1}_pal2nal_gblocks/{0}.fas'.format(gene, align_tool))
             line = gene + '\n'
             g.write(line)
 
-    new_gblocked_list = filelist.mklist(extension='.fas', directory='./Alignment/Codon/Trimmed/{}_pal2nal_gblocks'.format(align_tool))
+    new_gblocked_list = filelist.mklist(extension='.fas', directory='Results/Alignment/Codon/Trimmed/{}_pal2nal_gblocks'.format(align_tool))
     for gene in new_gblocked_list:
         convert(gene, align_tool)
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--alignment', help='alignment program', choices=['PRANK', 'MAFFT', 'MUSCLE'],
-                        default='PRANK')
-    parser.add_argument('-t', '--threads', help='number of threads', type=int, default=1)
-    args = parser.parse_args()
-
-    codonalign(args.alignment, args.threads)

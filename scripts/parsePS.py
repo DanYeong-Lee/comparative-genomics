@@ -8,18 +8,18 @@ from Bio.Seq import Seq
 def make_csv():
     header_site = ['\t', 'lnLH0', 'lnLH1', 'LRT', 'p_value', 'foreground w', '\t', 'PS site', 'Amino acid', 'P']
     header = ['\t', 'lnLH0', 'lnLH1', 'LRT', 'p_value', 'foreground w']
-    h = open('./PositiveSelection/Results/summary/positive_selection_result_site.csv', 'w')
+    h = open('Results/PositiveSelection/Results/summary/positive_selection_result_site.csv', 'w')
     wr = csv.writer(h)
     wr.writerow(header_site)
     h.close()
-    j = open('./PositiveSelection/Results/summary/positive_selection_result.csv', 'w')
+    j = open('Results/PositiveSelection/Results/summary/positive_selection_result.csv', 'w')
     wr1 = csv.writer(j)
     wr1.writerow(header)
     j.close()
 
 
 def parse(gene_name):
-    result_directory = './PositiveSelection/Results/codeml_results/'
+    result_directory = 'Results/PositiveSelection/Results/codeml_results/'
     H0_file = gene_name + '_H0'
     H1_file = gene_name + '_H1'
     if H0_file in os.listdir(result_directory) and H1_file in os.listdir(result_directory) and os.path.getsize(
@@ -64,7 +64,7 @@ def parse(gene_name):
 
             p_value = (1 - stats.chi2.cdf(LRT, df)) / 2
 
-            h = open('./PositiveSelection/Results/summary/positive_selection_result_site.csv', 'a')
+            h = open('Results/PositiveSelection/Results/summary/positive_selection_result_site.csv', 'a')
             wr = csv.writer(h)
 
             for i in range(len(site_list)):
@@ -77,7 +77,7 @@ def parse(gene_name):
             wr.writerow('\t')
             h.close()
 
-            j = open('./PositiveSelection/Results/summary/positive_selection_result.csv', 'a')
+            j = open('Results/PositiveSelection/Results/summary/positive_selection_result.csv', 'a')
             wr1 = csv.writer(j)
             line1 = [gene_name, H0_likelihood, H1_likelihood, LRT, p_value, w]
             wr1.writerow(line1)
@@ -88,8 +88,8 @@ def parse(gene_name):
 
 
 def choose():
-    os.system('Rscript /home/ldy9381/programs/ComparativeGenomics/scripts/FDR.R')
-    f = open('./PositiveSelection/Results/summary/positive_selection_adjusted.csv', 'r')
+    os.system('Rscript scripts/FDR.R')
+    f = open('Results/PositiveSelection/Results/summary/positive_selection_adjusted.csv', 'r')
     header = f.readline()
     F = f.readlines()
     f.close()
@@ -100,7 +100,7 @@ def choose():
         if float(i.split(',')[7]) < 0.1 and float(i.split(',')[6]) > 1.0:
             PS_lines.append(i)
 
-    g = open('./PositiveSelection/Results/summary/positively_selected_genes.csv', 'w')
+    g = open('Results/PositiveSelection/Results/summary/positively_selected_genes.csv', 'w')
     g.write(header)
     for i in PS_lines:
         g.write(i)
@@ -141,16 +141,16 @@ def TAAS_PS(result_directory, psList):
 def overlap(TAAS_PS_list, trim):
     site_overlap_dict = {}
     if trim == 'Gblocks':
-        TAAS_directory = './TAAS/Gblocks/'
+        TAAS_directory = 'Results/TAAS/Gblocks/'
     elif trim == 'NotTrimmed':
-        TAAS_directory = './TAAS/NotTrimmed/'
+        TAAS_directory = 'Results/TAAS/NotTrimmed/'
 
     for gene in TAAS_PS_list:
-        g = open('./PositiveSelection/Results/codeml_results/{}_H1'.format(gene), 'r')
+        g = open('Results/PositiveSelection/Results/codeml_results/{}_H1'.format(gene), 'r')
         G = g.readlines()
         g.close()
 
-        h = open('./Alignment/Codon/Trimmed/PRANK_pal2nal_gblocks/{}.fas'.format(gene), 'r')
+        h = open('Results/Alignment/Codon/Trimmed/PRANK_pal2nal_gblocks/{}.fas'.format(gene), 'r')
         H = h.read()
         h.close()
 
@@ -217,9 +217,9 @@ def overlap(TAAS_PS_list, trim):
 
 def write(site_overlap_dict, trim):
     if trim == 'Gblocks':
-        TAAS_directory = './TAAS/Gblocks/'
+        TAAS_directory = 'Results/TAAS/Gblocks/'
     elif trim == 'NotTrimmed':
-        TAAS_directory = './TAAS/NotTrimmed/'
+        TAAS_directory = 'Results/TAAS/NotTrimmed/'
 
     f = open(TAAS_directory + 'TAAS&PS_overlapping.txt', 'w')
     header = 'Genes that have positively selected TAAS sites ' + '(Total: ' + str(len(site_overlap_dict)) + ')\n\n'
@@ -235,14 +235,14 @@ def write(site_overlap_dict, trim):
 
 
 def parsePS_main():
-    os.makedirs('./PositiveSelection/Results/summary', exist_ok=True)
-    gene_list = filelist.mklist(directory='./PositiveSelection/Results/codeml_results', extension='_H0')
+    os.makedirs('Results/PositiveSelection/Results/summary', exist_ok=True)
+    gene_list = filelist.mklist(directory='Results/PositiveSelection/Results/codeml_results', extension='_H0')
     make_csv()
     for i in gene_list:
         parse(i)
     PS_list = choose()
-    TAAS_PS_Gblocks_list = TAAS_PS('./TAAS/Gblocks/', PS_list)
-    TAAS_PS_NotTrimmed_list = TAAS_PS('./TAAS/NotTrimmed/', PS_list)
+    TAAS_PS_Gblocks_list = TAAS_PS('Results/TAAS/Gblocks/', PS_list)
+    TAAS_PS_NotTrimmed_list = TAAS_PS('Results/TAAS/NotTrimmed/', PS_list)
     GOOD_dict_gblocks = overlap(TAAS_PS_Gblocks_list, 'Gblocks')
     Good_dict_nottrimmed = overlap(TAAS_PS_NotTrimmed_list, 'NotTrimmed')
     write(GOOD_dict_gblocks, 'Gblocks')
