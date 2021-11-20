@@ -1,0 +1,12 @@
+>mammals
+Bos_taurus#
+Equus_caballus
+Rhinopithecus_roxellana#
+Macaca_mulatta
+Sus_scrofa
+Camelus_ferus#
+Choloepus_didactylus#
+Dasypus_novemcinctus
+Homo_sapiens
+Sarcophilus_harrisii*
+>non_mammals
