@@ -4,7 +4,6 @@ Choloepus didactylus#
 Dasypus novemcinctus
 Mus musculus
 Homo sapiens
-Callithrix jacchus
 Macaca mulatta
 Rhinopithecus roxellana#
 Piliocolobus tephrosceles#
