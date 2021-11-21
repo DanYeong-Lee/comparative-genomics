@@ -1,6 +1,5 @@
 import os
-import filelist
-import parsefas
+from scripts import filelist
 import numpy as np
 
 

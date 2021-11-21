@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.append(os.path.abspath("./"))
+
+sys.path.append("/data/project/")
 from scripts.__main__ import main
 import argparse
 

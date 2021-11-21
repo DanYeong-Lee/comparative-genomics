@@ -1,5 +1,5 @@
 import os
-import filelist
+from scripts import filelist
 import multiprocessing
 
 

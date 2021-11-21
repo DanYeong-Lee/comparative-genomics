@@ -1,8 +1,8 @@
 import os
 import csv
 import argparse
-import filelist
-import parsefas
+from scripts import filelist
+from scripts import parsefas
 import multiprocessing
 
 

@@ -1,4 +1,4 @@
-import filelist
+from scripts import filelist
 import os
 import multiprocessing
 import argparse

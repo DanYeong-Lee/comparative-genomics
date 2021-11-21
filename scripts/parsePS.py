@@ -1,5 +1,5 @@
 import os
-import filelist
+from scripts import filelist
 import csv
 from scipy import stats
 from Bio.Seq import Seq
