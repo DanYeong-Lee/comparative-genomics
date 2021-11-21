@@ -2,9 +2,7 @@ import os
 import argparse
 import multiprocessing
 import re
-import parsefas
-import filelist
-from scripts import download_genomes, primary_transcript, reformat, TAAS, CodonAlign, codeml, parsePS, tree, align
+from scripts import download_genomes, primary_transcript, reformat, TAAS, CodonAlign, codeml, parsePS, tree, align, filelist, parsefas
 
 
 def MakeList(species_file):
